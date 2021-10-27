@@ -1,0 +1,62 @@
+#%RAML 1.0
+title: eh-cit-ora-esb570-po
+version: 1.0
+baseUri: http://citdev.ext.health.nsw.gov.au/eh-cit-ora-esb570-po
+mediaType:
+  - text/plain
+  - application/json
+
+traits:
+  jwt:
+    headers:
+      authorization:
+        description: Bearer 
+        type: string
+    responses:
+      400:
+        description: Token was not provided.
+      401:
+        description: Bad or expired token. To fix, you should re-authenticate the user.
+      403:
+        description: The client id validation failed.
+      503:
+        description: Error communicating with JWKS server.
+
+types:
+  approver:
+    properties:
+      SEQ?:
+        type: number
+        description: approve order
+      STAFFLINK_NUMBER:
+        type: string
+        description: staff link number of approver
+      ROLE?:
+        type: string
+        description: approver type can be gatekeeper, ULTIMATE or MANAGER 
+
+  error:
+    properties:
+      code?:
+        type: integer
+      message:
+        type: string
+        
+/approvers:  
+  post:
+    is: [jwt]
+    description: get approver list
+    responses:
+      200:
+        description: 200 means successful
+        body: 
+          text/plain:
+            example: {"REQUEST_ID":"RITM1134258","STATUS_CODE":"S","ERROR_MESSAGE":"","LINES":[{"SEQ":1,"STAFFLINK_NUMBER":"40053448", "ROLE": "GATE_KEEPER"},{"SEQ":2,"STAFFLINK_NUMBER":"60043765", "ROLE": "GATE_KEEPER"},{"SEQ":3,"STAFFLINK_NUMBER":"58500150", "ROLE": "ULTIMATE"}]}
+      
+      400:
+        description: 400 Bad Request
+      401:
+        description: 401 Unauthorized
+        
+            
+        
